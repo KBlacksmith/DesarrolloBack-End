@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string Nombre { get; set; }
         public int PeliculaId { get; set; }
-        public Pelicula Peliculas { get; set; }
+        public List<Pelicula> Peliculas { get; set; }
     }
 }

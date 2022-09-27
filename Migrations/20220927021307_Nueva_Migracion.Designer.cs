@@ -11,8 +11,8 @@ using WebAPI_Peliculas;
 namespace WebAPI_Peliculas.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220917035838_PeliculaActor")]
-    partial class PeliculaActor
+    [Migration("20220927021307_Nueva_Migracion")]
+    partial class Nueva_Migracion
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -22,6 +22,21 @@ namespace WebAPI_Peliculas.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("ActorPelicula", b =>
+                {
+                    b.Property<int>("CastId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PeliculasId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CastId", "PeliculasId");
+
+                    b.HasIndex("PeliculasId");
+
+                    b.ToTable("ActorPelicula");
+                });
 
             modelBuilder.Entity("WebAPI_Peliculas.Entidades.Actor", b =>
                 {
@@ -38,8 +53,6 @@ namespace WebAPI_Peliculas.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PeliculaId");
 
                     b.ToTable("Actores");
                 });
@@ -63,20 +76,19 @@ namespace WebAPI_Peliculas.Migrations
                     b.ToTable("Peliculas");
                 });
 
-            modelBuilder.Entity("WebAPI_Peliculas.Entidades.Actor", b =>
+            modelBuilder.Entity("ActorPelicula", b =>
                 {
-                    b.HasOne("WebAPI_Peliculas.Entidades.Pelicula", "Peliculas")
-                        .WithMany("Cast")
-                        .HasForeignKey("PeliculaId")
+                    b.HasOne("WebAPI_Peliculas.Entidades.Actor", null)
+                        .WithMany()
+                        .HasForeignKey("CastId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Peliculas");
-                });
-
-            modelBuilder.Entity("WebAPI_Peliculas.Entidades.Pelicula", b =>
-                {
-                    b.Navigation("Cast");
+                    b.HasOne("WebAPI_Peliculas.Entidades.Pelicula", null)
+                        .WithMany()
+                        .HasForeignKey("PeliculasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

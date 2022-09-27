@@ -21,7 +21,17 @@ namespace WebAPI_Peliculas.Controllers
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Actor>> GetById(int id)
         {
-            return await dbContext.Actores.FirstOrDefaultAsync(x => x.Id == id);
+            var actor =  await dbContext.Actores.FirstOrDefaultAsync(x => x.Id == id);
+            if(actor == null)
+            {
+                return NotFound("No se encontró el actor con id " + id.ToString());
+            }
+            return actor;
+        }
+        [HttpGet("primero")]
+        public async Task<ActionResult<Actor>> GetPrimero()
+        {
+            return await dbContext.Actores.FirstOrDefaultAsync();
         }
         [HttpPost]
         public async Task<ActionResult> Post(Actor actor)

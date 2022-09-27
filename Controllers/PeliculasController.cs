@@ -16,13 +16,39 @@ namespace WebAPI_Peliculas.Controllers
         }
 
         [HttpGet]
+        [HttpGet("listado")]
+        [HttpGet("/listado")]
         public async Task<ActionResult<List<Pelicula>>> Get()
         {
             return await dbContext.Peliculas.Include(x => x.Cast).ToListAsync();
         }
-
+        [HttpGet("primero")]
+        public async Task<ActionResult<Pelicula>> PrimerPelicula([FromHeader] int valor, [FromQuery] string pelicula)
+        {
+            return await dbContext.Peliculas.FirstOrDefaultAsync();
+        }
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Pelicula>> GetByID(int id)
+        {
+            var pelicula = await dbContext.Peliculas.FirstOrDefaultAsync(x => x.Id == id);
+            if (pelicula == null)
+            {
+                return NotFound("No se encontró el alumno con id "+id.ToString());
+            }
+            return pelicula;
+        }
+        [HttpGet("{nombre}")]
+        public async Task<ActionResult<Pelicula>> GetPorTitulo([FromRoute] string nombre)
+        {
+            var pelicula = await dbContext.Peliculas.FirstOrDefaultAsync(x => x.Titulo.Contains(nombre));
+            if(pelicula == null)
+            {
+                return NotFound("No se encontró una película con título \"" + nombre + "\"");
+            }
+            return pelicula;
+        }
         [HttpPost]
-        public async Task<ActionResult> Post(Pelicula pelicula)
+        public async Task<ActionResult> Post([FromBody] Pelicula pelicula)
         {
             dbContext.Add(pelicula);
             await dbContext.SaveChangesAsync();
